@@ -1,21 +1,17 @@
 import java.util.*;
 class Solution {
-    public class Tree{
-        List<Integer> list = new ArrayList<>();
-    }
-    
     public int solution(int n, int[][] wires) {
-        Tree[] tree = new Tree[n + 1];
+        List<Integer>[] graph = new ArrayList[n + 1];
         
         for(int i = 0; i <= n; i++){
-            tree[i] = new Tree();
+            graph[i] = new ArrayList<>();
         }
         
         for(int[] w : wires){
             int a = w[0];
             int b = w[1];
-            tree[a].list.add(b);
-            tree[b].list.add(a);
+            graph[a].add(b);
+            graph[b].add(a);
         }
 
         int min = Integer.MAX_VALUE;
@@ -26,28 +22,28 @@ class Solution {
             
             boolean[] visited = new boolean[n+1];
         
-            tree[a].list.remove(Integer.valueOf(b));
-            tree[b].list.remove(Integer.valueOf(a));
+            graph[a].remove(Integer.valueOf(b));
+            graph[b].remove(Integer.valueOf(a));
             
-            int aCount = dfs(tree, a, visited);
-            int bCount = dfs(tree, b, visited);
+            int aCount = dfs(graph, a, visited);
+            int bCount = n - aCount;
             
             min = Math.min(min, Math.abs(aCount - bCount));
             
-            tree[a].list.add(b);
-            tree[b].list.add(a);            
+            graph[a].add(b);
+            graph[b].add(a);            
         }
 
         return min;
     }
     
-    public int dfs(Tree[] tree, int node, boolean[] visited){
+    public int dfs(List<Integer>[] graph, int node, boolean[] visited){
         visited[node] = true;
         int cnt = 1;
         
-        for(int next : tree[node].list){
+        for(int next : graph[node]){
             if(!visited[next]){
-               cnt += dfs(tree, next, visited);
+               cnt += dfs(graph, next, visited);
             }
         }
         return cnt;
