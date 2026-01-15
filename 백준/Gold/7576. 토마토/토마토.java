@@ -53,8 +53,7 @@ public class Main {
                 int nx = x + dx[k];
                 if(ny >= 0 && nx >= 0 && ny < n && nx < m){
                     if(box[ny][nx] == 0){
-                        int nextDay = day + 1;
-                        queue.add(new int[]{ny, nx, nextDay});
+                        queue.add(new int[]{ny, nx, day+1});
                         box[ny][nx] = 1;
                         unTomato--;
                     }
