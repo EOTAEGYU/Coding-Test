@@ -2,62 +2,57 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-public class Main {
+public class Main{
     static int N, M;
-
     static int[][] map;
     static boolean[][] visited;
-
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
+    static int[] dx = {0, 0, -1, 1};
+    static int[] dy = {1, -1, 0, 0};
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+        N = sc.nextInt(); // Y
+        M = sc.nextInt(); // X
 
-        N = sc.nextInt();
-        M = sc.nextInt();
-        sc.nextLine();
+        // 미로 저장
+        map = new int[N+1][M+1];
+        visited = new boolean[N+1][M+1];
 
-        map = new int[N][M];
-        visited = new boolean[N][M];
-
-        for (int i = 0; i < N; i++){
-            String line = sc.nextLine();
-            for (int j = 0; j < M; j++){
-                map[i][j] = line.charAt(j) - '0';
+        for (int i = 1; i <= N; i++) {
+            String line = sc.next(); // 한 줄을 문자열로 읽음
+            for (int j = 1; j <= M; j++) {
+                // charAt(j-1)을 통해 문자를 하나씩 가져온 뒤 '0'을 빼서 숫자로 변환
+                map[i][j] = line.charAt(j - 1) - '0';
             }
         }
-        bfs(0, 0);
 
-        System.out.println(map[N - 1][M - 1]);
+        bfs();
 
+        System.out.println(map[N][M]);
     }
 
-    // bfs
-    static void bfs(int x, int y){
+    public static void bfs(){
+        visited[1][1] = true;
         Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[]{x, y});
-        visited[x][y] = true;
+        queue.add(new int[]{1, 1}); // {y, x}
 
-        while(!queue.isEmpty()){
-            int[] now = queue.poll();
-            int nowX = now[0];
-            int nowY = now[1];
+        while (!queue.isEmpty()){
+            int[] cur = queue.poll();
+            int cy = cur[0];
+            int cx = cur[1];
 
+            // 인접한 곳 중 길이 있으면 추가
             for(int i = 0; i < 4; i++){
-                int nextX = nowX + dx[i];
-                int nextY = nowY + dy[i];
-
-                // 범위 안이고 방문하지 않았을 때
-                if(nextX >= 0 && nextY >=0 && nextX < N && nextY < M){
-                    if (!visited[nextX][nextY] && map[nextX][nextY] == 1){
-                        queue.add(new int[]{nextX, nextY});
-                        map[nextX][nextY] = map[nowX][nowY] + 1;
-                        visited[nextX][nextY] = true;
+                int nx = cx + dx[i];
+                int ny = cy + dy[i];
+                if(nx > 0 && ny > 0 && nx < M+1 && ny < N+1){
+                    if(!visited[ny][nx] && map[ny][nx] > 0){
+                        visited[ny][nx] = true;
+                        map[ny][nx] = map[cy][cx] + 1;
+                        queue.add(new int[]{ny, nx});
                     }
                 }
-
             }
         }
+
     }
 }
-
